@@ -1,8 +1,6 @@
 # JS Snake
 
-- Vanilla JS
-- Points tracked and high score recorded in local storage
-- Sound effects on apple eat, game over and new high score
+This is a simple old-school snake game written in vanilla JavaScript. The game includes point tracking, high score (stored to local browser storage), and sound effects when the snake eats an apple, sets a new high score, or the game ends! 🍎🐍
 
 ## Game Play
 
