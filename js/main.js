@@ -1,9 +1,13 @@
-// Initialize game state
+// Initialize game state and audio
 const canvas = document.getElementById("gameCanvas");
 const context = canvas.getContext("2d");
 const biteSound = document.getElementById("biteSound");
 const gameOverSound = document.getElementById("gameOverSound");
 const celebrationSound = document.getElementById("celebrationSound");
+biteSound.volume = 0.2;
+gameOverSound.volume = 0.2;
+celebrationSound.volume = 0.2;
+
 const boxSize = 40;
 let snake = [{ x: 5, y: 5 }];
 let food = {
