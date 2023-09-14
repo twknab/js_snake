@@ -16,6 +16,7 @@
   <audio id="gameOverSound" src="./boom.mp3"></audio>
   <audio id="celebrationSound" src="./celebration.mp3"></audio>
   <script>
+    // Initialize game state
     const canvas = document.getElementById('gameCanvas');
     const context = canvas.getContext('2d');
     const biteSound = document.getElementById('biteSound');
@@ -30,6 +31,7 @@
     let highScore = localStorage.getItem('highScore') || 0;
     document.getElementById('best').innerText = `Best: ${highScore}`;
 
+    // Listen for Keystrokes
     document.addEventListener('keydown', function (event) {
       if (gameOver) {
         snake = [{ x: 5, y: 5 }];
@@ -47,63 +49,82 @@
       }
     });
 
-    function draw() {
+    const resetCanvas = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
+    }
 
-      // Draw snake
+    const drawSnake = () => {
       for (let cell of snake) {
         context.fillStyle = 'yellow';
         context.fillRect(cell.x * boxSize, cell.y * boxSize, boxSize, boxSize);
       }
+    }
 
-      // Draw food
-      context.fillStyle = 'white';
+    const drawFood = () => {
+      context.fillStyle = 'purple';
       context.fillRect(food.x * boxSize, food.y * boxSize, boxSize, boxSize);
+    }
 
-      // Draw score
+    const drawScore = () => {
       context.fillStyle = 'white';
       context.font = '40px "Press Start 2P"';
       context.textAlign = 'start';  // Default value
       context.textBaseline = 'alphabetic';  // Default value
       context.fillText(score, 20, 50);
+    }
 
-      // Move snake
-      let head = { x: snake[0].x + dx, y: snake[0].y + dy };
-
-      // Check for food collision
+    const moveSnake = () => {
+      const head = { x: snake[0].x + dx, y: snake[0].y + dy };
       if (head.x === food.x && head.y === food.y) {
-        food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
-        score++;
-        biteSound.play();
+        eatFood(head);
       } else {
         snake.pop();
       }
-
-      // Check for wall or self collision
-      if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(cell => cell.x === head.x && cell.y === head.y)) {
-        gameOver = true;
-        gameOverSound.play();
-        context.fillStyle = 'white';
-        context.font = '70px "Press Start 2P"';
-        context.strokeStyle = 'yellow';
-        context.lineWidth = 5;
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
-        context.strokeText('GAME OVER', canvas.width / 2, canvas.height / 2);
-        if (score > highScore) {
-          localStorage.setItem('highScore', score);
-          document.getElementById('best').innerText = `Best: ${score}`;
-          celebrationSound.play();
-          context.font = '40px "Press Start 2P"';
-          context.fillText('New High Score!', canvas.width / 2, canvas.height / 2 + 50);
-        }
-        return;
+      if (isCollision(head)) {
+        handleCollision();
       } else {
         snake.unshift(head);
       }
+    };
 
-      setTimeout(draw, 100);
+    const eatFood = (head) => {
+      food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
+      score++;
+      biteSound.play();
+    };
+
+    const isCollision = (head) => {
+      return head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(cell => cell.x === head.x && cell.y === head.y);
+    };
+
+    const handleCollision = () => {
+      gameOver = true;
+      gameOverSound.play();
+      context.fillStyle = 'white';
+      context.font = '70px "Press Start 2P"';
+      context.strokeStyle = 'yellow';
+      context.lineWidth = 5;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+      context.strokeText('GAME OVER', canvas.width / 2, canvas.height / 2);
+      if (score > highScore) {
+        localStorage.setItem('highScore', score);
+        document.getElementById('best').innerText = `Best: ${score}`;
+        celebrationSound.play();
+        context.font = '40px "Press Start 2P"';
+        context.fillText('New Best Score!', canvas.width / 2, canvas.height / 2 + 50);
+      }
+    };
+
+    function draw() {
+      resetCanvas();
+      drawSnake();
+      drawFood();
+      drawScore();
+      moveSnake();
+
+      setTimeout(draw, 100); // change val to set speed of snake
     }
 
     draw();
