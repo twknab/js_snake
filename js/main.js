@@ -72,7 +72,7 @@ const drawSnake = () => {
 };
 
 const drawFood = () => {
-  context.fillStyle = "purple";
+  context.fillStyle = "red";
   context.fillRect(food.x * boxSize, food.y * boxSize, boxSize, boxSize);
 };
 
