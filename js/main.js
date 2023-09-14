@@ -142,13 +142,17 @@ const handleCollision = () => {
 };
 
 function draw() {
+  if (gameOver) {
+    return;
+  }
+
   resetCanvas();
   drawSnake();
   drawFood();
   drawScore();
   moveSnake();
 
-  setTimeout(draw, 100); // change val to set speed of snake
+  setTimeout(draw, 100); // change val to set speed of snake)
 }
 
 draw();
